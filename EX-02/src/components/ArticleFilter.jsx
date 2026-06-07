@@ -6,7 +6,7 @@ export default function ArticleFilter() {
   const [journalists, setJournalists] = useState([])
   const [categories, setCategories] = useState([])
 
-  const [filterArticle, setFilterArticle] = useState([])
+  const [AllArticles, setAllArticle] = useState([])
 
   // Fetch all articles when component mounts
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ArticleFilter() {
     try {
       const res = await axios.get('http://localhost:3000/articles')
       setArticles(res.data)
-      setFilterArticle(res.data)
+      setAllArticle(res.data)
       console.log(res.data)
     } catch (error){
       console.error(error)
@@ -52,19 +52,21 @@ export default function ArticleFilter() {
   //we apply filter to find the article, which journalist and category it belong to
   const applyFilter = () => {
     //read the current value from dropdown
-    const journalistId = document.getElementById("journalistFilter").value
-    const categoryId = document.getElementById("categoryFilter").value
+    const jID = document.getElementById("journalistFilter").value
+    const cID = document.getElementById("categoryFilter").value
 
-    let result = articles
+    // use the data that we have copy from fetching api above
+    let result = AllArticles
     //filter time
-    if ( journalistId !== "" || journalistId !== 0){
-      result = articles.filter( (a) => a.id === journalistId)
+    if ( jID !== ""){
+      result = result.filter( (a) => a.journalistId === Number(jID))
     }
 
-    if ( categoryId !== "" || categoryId !== 0) {
-      result = articles.filter((a) => (a.id === categoryId))
+    if ( cID !== "") {
+      result = result.filter((a) => (a.categoryId === Number(cID)))
     }
-    setFilterArticle(result)
+    setArticles(result)
+    console.log(result)
   }
 
 
@@ -73,7 +75,7 @@ export default function ArticleFilter() {
     document.getElementById("categoryFilter").value = ""
 
     //reset it back to the orignal back
-    setFilterArticle(articles)
+    setArticles(AllArticles)
 
   }
 
@@ -99,13 +101,13 @@ export default function ArticleFilter() {
         <button
           onClick={() => {
             // Logic to apply filters
-            applyFilter
+            applyFilter()
           }}
         >Apply Filters</button>
         <button
           onClick={() => {
             // Logic to reset filters
-            resetFilter
+            resetFilter()
           }}
         >Reset Filters</button>
       </div>

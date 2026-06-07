@@ -5,7 +5,7 @@ export default function ArticleFilterByCategory() {
   const [articles, setArticles] = useState([]);
   const [categories, setCategories] = useState([])
 
-  const [filterArticleByCate, setFilterArticleByCate] = useState([])
+  const [allArticles, setAllArticles] = useState([])
   // Fetch all articles when component mounts
   useEffect(() => {
     fetchArticles();
@@ -18,7 +18,7 @@ export default function ArticleFilterByCategory() {
       const res = await axios.get('http://localhost:3000/articles')
       console.log(res.data)
       setArticles(res.data)
-      setFilterArticleByCate(res.data)
+      setAllArticles(res.data)
     } catch (error) {
       console.error(error)
     }
@@ -51,12 +51,12 @@ export default function ArticleFilterByCategory() {
         <button
           onClick={() => {
             // Logic to apply filters
-            const categoryId = document.getElementById("categoryFilter").value
-            let result = articles
-            if (categoryId !== "" || categoryId !== 0){
-              result = articles.filter((a) => a.id === categoryId)
+            const cID = document.getElementById("categoryFilter").value
+            let result = allArticles
+            if (cID !== "" || cID !== 0){
+              result = result.filter((a) => a.categoryId === Number(cID))
             }
-            setFilterArticleByCate(result)
+            setArticles(result)
 
           }}
         >Apply Filters</button>
@@ -64,7 +64,7 @@ export default function ArticleFilterByCategory() {
           onClick={() => {
             // Logic to reset filters
             document.getElementById("categoryFilter").value = ""
-            setFilterArticleByCate(articles)
+            setArticles(allArticles)
           }}
         >Reset Filters</button>
       </div>

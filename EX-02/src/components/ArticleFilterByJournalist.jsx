@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 export default function ArticleFilterByJournalist() {
   const [articles, setArticles] = useState([]);
   const [journalists, setJournalists] = useState([])
-  const [filteredArticles, setFilteredArticles] = useState([]); // for display
+  const [allArticles, setAllArticles] = useState([]); // for display
 
   // Fetch all articles when component mounts
   useEffect(() => {
@@ -17,6 +17,7 @@ export default function ArticleFilterByJournalist() {
     try {
       const res = await axios.get('http://localhost:3000/articles')
       setArticles(res.data)
+      setAllArticles(res.data)
     } catch (error) {
       console.error(error)
     }
@@ -39,9 +40,7 @@ export default function ArticleFilterByJournalist() {
       <h2>Articles</h2>
       <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
         <label htmlFor="journalistFilter">Filter by Journalist:</label>
-        <select id="journalistFilter 
-          value=
-        ">
+        <select id="journalistFilter">
           <option value="">All Journalists</option>
           {/* Options for journalists */}
           {journalists.map((item) => 
@@ -53,20 +52,21 @@ export default function ArticleFilterByJournalist() {
           onClick={() => {
             // Logic to apply filters
             const journalistId = document.getElementById("journalistFilter").value;
+
+            let result = allArticles
             if (journalistId !== "" ){
-              setFilteredArticles(articles)
-            } else {
-              let result = articles.filter( (a) => (a.id) === journalistId)
-              setFilteredArticles(result);
+              result = result.filter( (a) => (a.journalistId) === Number(journalistId))
+              setArticles(result);
               console.log(result);
-            }
+            } 
+            
           }}
         >Apply Filters</button>
         <button
           onClick={() => {
             // Logic to reset filters
             document.getElementById("journalistFilter").value ="";
-            setFilteredArticles(articles);
+            setArticles(allArticles);
           }}
         >Reset Filters</button>
       </div>
